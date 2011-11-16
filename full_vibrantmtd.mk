@@ -31,7 +31,7 @@ PRODUCT_LOCALES += hdpi
 
 # Discard inherited values and use our own instead.
 PRODUCT_NAME := full_vibrantmtd
-PRODUCT_DEVICE := SGH-T959
+PRODUCT_DEVICE := vibrantmtd
 PRODUCT_BRAND := Samsung
 PRODUCT_MANUFACTURER := Samsung
 PRODUCT_MODEL := SGH-T959
