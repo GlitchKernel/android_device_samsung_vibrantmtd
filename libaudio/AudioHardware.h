@@ -26,13 +26,17 @@
 #include <hardware_legacy/AudioHardwareBase.h>
 #include <media/mediarecorder.h>
 
+#include "secril-client.h"
+
 extern "C" {
     struct pcm;
     struct mixer;
     struct mixer_ctl;
 };
 
-namespace android {
+namespace android_audio_legacy {
+
+using namespace android;
 
 // TODO: determine actual audio DSP and hardware latency
 // Additionnal latency introduced by audio DSP and hardware in ms
@@ -84,6 +88,9 @@ public:
 
     virtual status_t setVoiceVolume(float volume);
     virtual status_t setMasterVolume(float volume);
+#ifdef HAVE_FM_RADIO
+    virtual status_t setFmVolume(float volume);
+#endif
 
     virtual status_t setMode(int mode);
 
@@ -114,6 +121,12 @@ public:
             const char *getVoiceRouteFromDevice(uint32_t device);
 
             status_t setIncallPath_l(uint32_t device);
+
+#ifdef HAVE_FM_RADIO
+            void enableFMRadio();
+            void disableFMRadio();
+            status_t setFMRadioPath_l(uint32_t device);
+#endif
 
             status_t setInputSource_l(audio_source source);
 
@@ -156,6 +169,26 @@ private:
     audio_source    mInputSource;
     bool            mBluetoothNrec;
     int             mTTYMode;
+
+    void*           mSecRilLibHandle;
+    HRilClient      mRilClient;
+    bool            mActivatedCP;
+    HRilClient      (*openClientRILD)  (void);
+    int             (*disconnectRILD)  (HRilClient);
+    int             (*closeClientRILD) (HRilClient);
+    int             (*isConnectedRILD) (HRilClient);
+    int             (*connectRILD)     (HRilClient);
+    int             (*setCallVolume)   (HRilClient, SoundType, int);
+    int             (*setCallAudioPath)(HRilClient, AudioPath);
+    int             (*setCallClockSync)(HRilClient, SoundClockCondition);
+    void            loadRILD(void);
+    status_t        connectRILDIfRequired(void);
+
+#ifdef HAVE_FM_RADIO
+    int             mFmFd;
+    float           mFmVolume;
+    bool            mFmResumeAfterCall;
+#endif
 
     //  trace driver operations for dump
     int             mDriverOp;
@@ -317,6 +350,10 @@ private:
         virtual status_t getNextBuffer(BufferProvider::Buffer* buffer);
         virtual void releaseBuffer(BufferProvider::Buffer* buffer);
 
+        // Stubs (ICS)
+        virtual status_t addAudioEffect(effect_handle_t effect) { return INVALID_OPERATION; }
+        virtual status_t removeAudioEffect(effect_handle_t effect) { return INVALID_OPERATION; }
+
         int prepareLock();
         void lock();
         void unlock();
@@ -346,6 +383,6 @@ private:
 
 };
 
-}; // namespace android
+}; // namespace android_audio_legacy
 
 #endif

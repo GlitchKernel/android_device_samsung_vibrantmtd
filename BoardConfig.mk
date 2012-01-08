@@ -35,26 +35,29 @@ TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 TARGET_NO_BOOTLOADER := true
 TARGET_NO_RADIOIMAGE := true
 
-BOARD_MOBILEDATA_INTERFACE_NAME = "pdp0"
-
 TARGET_PROVIDES_INIT := true
-TARGET_PROVIDES_INIT_TARGET_RC := true
 TARGET_BOARD_PLATFORM := s5pv210
 TARGET_BOOTLOADER_BOARD_NAME := aries
 TARGET_RECOVERY_INITRC := device/samsung/aries-common/recovery.rc
 
+BOARD_MOBILEDATA_INTERFACE_NAME := "pdp0"
+BOARD_UMS_LUNFILE := /sys/class/android_usb/android0/f_mass_storage/lun/file
+
 # Releasetools
-TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := ./device/samsung/aries-common/releasetools/aries_ota_from_target_files
-TARGET_RELEASETOOL_IMG_FROM_TARGET_SCRIPT := ./device/samsung/aries-common/releasetools/aries_img_from_target_files
+TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := ./device/samsung/vibrantmtd/releasetools/vibrantmtd_ota_from_target_files
+TARGET_RELEASETOOL_IMG_FROM_TARGET_SCRIPT := ./device/samsung/vibrantmtd/releasetools/vibrantmtd_img_from_target_files
+
+# Hardware rendering
+USE_OPENGL_RENDERER := true
+
+# skia
+BOARD_USE_SKIA_LCDTEXT := true
 
 # Camera
 USE_CAMERA_STUB := false
 ifeq ($(USE_CAMERA_STUB),false)
 BOARD_CAMERA_LIBRARIES := libcamera
 endif
-
-#GPS
-#BOARD_USES_GPSSHIM := true
 
 TARGET_PROVIDES_LIBAUDIO := true
 
@@ -66,11 +69,6 @@ BOARD_HAVE_BLUETOOTH_BCM := true
 BOARD_USES_OVERLAY := true
 BOARD_V4L2_DEVICE := /dev/video1
 BOARD_CAMERA_DEVICE := /dev/video0
-#BOARD_SECOND_CAMERA_DEVICE := /dev/video2
-
-# FM Radio
-BOARD_HAVE_FM_RADIO := true
-BOARD_GLOBAL_CFLAGS += -DHAVE_FM_RADIO
 
 BOARD_NAND_PAGE_SIZE := 4096 -s 128
 BOARD_KERNEL_BASE := 0x32000000
@@ -79,17 +77,18 @@ BOARD_KERNEL_CMDLINE := console=ttyFIQ0,115200 init=/init no_console_suspend
 TARGET_PREBUILT_KERNEL := device/samsung/vibrantmtd/kernel
 
 BOARD_BOOTIMAGE_PARTITION_SIZE := 7864320
-BOARD_SYSTEMIMAGE_PARTITION_SIZE := 196608000
-BOARD_USERDATAIMAGE_PARTITION_SIZE := 2013265920
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 262144000
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 1665130496
 BOARD_FLASH_BLOCK_SIZE := 4096
 
 # Connectivity - Wi-Fi
-WPA_SUPPLICANT_VERSION := VER_0_6_X
 BOARD_WPA_SUPPLICANT_DRIVER := WEXT
+WPA_SUPPLICANT_VERSION := VER_0_8_X
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_wext
 BOARD_WLAN_DEVICE := bcm4329
 WIFI_DRIVER_MODULE_PATH     := "/system/lib/modules/bcm4329.ko"
-WIFI_DRIVER_FW_STA_PATH     := "/vendor/firmware/fw_bcm4329.bin"
-WIFI_DRIVER_FW_AP_PATH      := "/vendor/firmware/fw_bcm4329_apsta.bin"
+WIFI_DRIVER_FW_PATH_STA     := "/vendor/firmware/fw_bcm4329.bin"
+WIFI_DRIVER_FW_PATH_AP      := "/vendor/firmware/fw_bcm4329_apsta.bin"
 WIFI_DRIVER_MODULE_NAME     :=  "bcm4329"
 WIFI_DRIVER_MODULE_ARG      :=  "firmware_path=/vendor/firmware/fw_bcm4329.bin nvram_path=/vendor/firmware/nvram_net.txt"
 
@@ -98,12 +97,10 @@ BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
 
 # Recovery
 TARGET_USERIMAGES_USE_EXT4 := true
-BOARD_HAS_NO_SELECT_BUTTON := true
+BOARD_CUSTOM_GRAPHICS := ../../../device/samsung/aries-common/recovery/graphics.c
 BOARD_USES_BML_OVER_MTD := true
 BOARD_CUSTOM_BOOTIMG_MK := device/samsung/aries-common/shbootimg.mk
 TARGET_RECOVERY_PRE_COMMAND := "echo 1 > /cache/.startrecovery; sync;"
+BOARD_HAS_NO_SELECT_BUTTON := true
 
-# Include aries specific stuff
--include device/samsung/aries-common/Android.mk
-
-TARGET_OTA_ASSERT_DEVICE := vibrant,vibrantmtd,SGH-T959
+TARGET_OTA_ASSERT_DEVICE := aries,vibrant,vibrantmtd,SGH-T959,T959

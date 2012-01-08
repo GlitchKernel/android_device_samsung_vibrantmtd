@@ -38,26 +38,32 @@
 # These is the hardware-specific overlay, which points to the location
 # of hardware-specific resource overrides, typically the frameworks and
 # application settings that are stored in resourced.
-DEVICE_PACKAGE_OVERLAYS := device/samsung/aries-common/overlay
+DEVICE_PACKAGE_OVERLAYS := device/samsung/vibrantmtd/overlay
 
 # These are the hardware-specific configuration files
-PRODUCT_COPY_FILES = \
-        device/samsung/vibrantmtd/asound.conf:system/etc/asound.conf \
-	device/samsung/aries-common/vold.fstab:system/etc/vold.fstab \
-	device/samsung/aries-common/egl.cfg:system/lib/egl/egl.cfg
+PRODUCT_COPY_FILES := \
+	device/samsung/vibrantmtd/asound.conf:system/etc/asound.conf \
+	device/samsung/vibrantmtd/vold.fstab:system/etc/vold.fstab \
+	device/samsung/aries-common/egl.cfg:system/lib/egl/egl.cfg \
+	device/samsung/aries-common/mxt224_ts_input.idc:system/usr/idc/mxt224_ts_input.idc \
+	device/samsung/aries-common/main.conf:system/etc/bluetooth/main.conf
 
 # Init files
 PRODUCT_COPY_FILES += \
-	device/samsung/aries-common/init.rc:root/init.rc \
 	device/samsung/vibrantmtd/init.aries.rc:root/init.aries.rc \
+	device/samsung/vibrantmtd/init.rc:root/init.rc \
+	device/samsung/aries-common/init.aries.usb.rc:root/init.aries.usb.rc \
+	device/samsung/aries-common/init.aries.usb.rc:recovery/root/usb.rc \
 	device/samsung/aries-common/lpm.rc:root/lpm.rc \
-	device/samsung/aries-common/ueventd.aries.rc:root/ueventd.aries.rc \
-	device/samsung/aries-common/setupenv.sh:recovery/root/sbin/setupenv.sh
+	device/samsung/vibrantmtd/ueventd.aries.rc:root/ueventd.aries.rc \
+	device/samsung/aries-common/setupdatadata.sh:root/sbin/setupdatadata.sh \
+	bootable/recovery/nandroid-md5.sh:recovery/root/sbin/nandroid-md5.sh
 
 # Prebuilt kl keymaps
 PRODUCT_COPY_FILES += \
-	device/samsung/vibrantmtd/cypress-touchkey.kl:system/usr/keylayout/cypress-touchkey.kl \
+	device/samsung/aries-common/cypress-touchkey.kl:system/usr/keylayout/cypress-touchkey.kl \
 	device/samsung/aries-common/sec_jack.kl:system/usr/keylayout/sec_jack.kl \
+	device/samsung/vibrantmtd/aries-keypad.kl:system/usr/keylayout/aries-keypad.kl \
 	device/samsung/aries-common/s3c-keypad.kl:system/usr/keylayout/s3c-keypad.kl
 
 # Generated kcm keymaps
@@ -68,7 +74,12 @@ PRODUCT_PACKAGES := \
 # Filesystem management tools
 PRODUCT_PACKAGES += \
 	make_ext4fs \
-	setup_fs
+	setup_fs \
+	bml_over_mtd
+
+# Usb accessory
+PRODUCT_PACKAGES += \
+	com.android.future.usb.accessory
 
 # These are the OpenMAX IL configuration files
 PRODUCT_COPY_FILES += \
@@ -86,43 +97,40 @@ PRODUCT_PACKAGES += \
 # Misc other modules
 PRODUCT_PACKAGES += \
 	lights.aries \
-	overlay.aries \
-	sensors.aries
+	hwcomposer.aries \
+	camera.aries \
+	audio.primary.aries \
+	audio_policy.aries \
+	audio.a2dp.default \
+	libs3cjpeg
 
 # Libs
 PRODUCT_PACKAGES += \
-	libcamera \
 	libstagefrighthw
 
-# Bluetooth MAC Address
+# Device-specific packages
 PRODUCT_PACKAGES += \
-	bdaddr_read
+	AriesParts \
+	tvouthack
 
-# Service Mode Secret Code
-PRODUCT_PACKAGES += \
-	SamsungServiceMode
-
-# Input device calibration files
+# apns
 PRODUCT_COPY_FILES += \
-	device/samsung/aries-common/mxt224_ts_input.idc:system/usr/idc/mxt224_ts_input.idc
-
-# apns config file
-PRODUCT_COPY_FILES += \
-        vendor/cyanogen/prebuilt/common/etc/apns-conf.xml:system/etc/apns-conf.xml
+	development/data/etc/apns-conf.xml:system/etc/apns-conf.xml
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
 	frameworks/base/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
 	frameworks/base/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
-	frameworks/base/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
-	frameworks/base/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
+	frameworks/base/data/etc/android.hardware.telephony.cdma.xml:system/etc/permissions/android.hardware.telephony.cdma.xml \
         frameworks/base/data/etc/android.hardware.location.xml:system/etc/permissions/android.hardware.location.xml \
 	frameworks/base/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
 	frameworks/base/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
+	frameworks/base/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
 	frameworks/base/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
 	frameworks/base/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
 	frameworks/base/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
 	frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
+	frameworks/base/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
 	packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:system/etc/permissions/android.software.live_wallpaper.xml
 
 # The OpenGL ES API level that is natively supported by this device.
@@ -134,17 +142,25 @@ PRODUCT_PROPERTY_OVERRIDES := \
 # Note that the only such settings should be the ones that are too low-level to
 # be reachable from resources or other mechanisms.
 PRODUCT_PROPERTY_OVERRIDES += \
-       wifi.interface=eth0 \
+       wifi.interface=wlan0 \
        wifi.supplicant_scan_interval=20 \
        ro.telephony.ril_class=samsung \
-       mobiledata.interfaces=pdp0,eth0,gprs,ppp0 \
-       dalvik.vm.heapsize=32m
+       ro.telephony.ril.v3=icccardstatus,datacall,signalstrength,facilitylock \
+       mobiledata.interfaces=pdp0,eth0,gprs,ppp0
 
 # enable Google-specific location features,
 # like NetworkLocationProvider and LocationCollector
 PRODUCT_PROPERTY_OVERRIDES += \
         ro.com.google.locationfeatures=1 \
-        ro.com.google.networklocation=1
+        ro.com.google.networklocation=1 \
+ro.url.legal=http://www.google.com/intl/%s/mobile/android/basic/phone-legal.html \
+	ro.url.legal.android_privacy=http://www.google.com/intl/%s/mobile/android/basic/privacy.html \
+	ro.com.google.clientidbase=android-google \
+	ro.com.android.wifi-watchlist=GoogleGuest \
+	ro.setupwizard.enterprise_mode=1 \
+	ro.ril.enable.managed.roaming=1 \
+	ro.ril.oem.nosim.ecclist=911,112,999,000,08,118,120,122,110,119,995 \
+	ro.ril.emc.mode=2
 
 # Extended JNI checks
 # The extended JNI checks will cause the system to run more slowly, but they can spot a variety of nasty bugs 
@@ -153,16 +169,24 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.kernel.android.checkjni=0 \
     dalvik.vm.checkjni=false \
-    persist.sys.vold.switchexternal=1
+    dalvik.vm.heapsize=48m \
+    dalvik.vm.heapstartsize=5m \
+    dalvik.vm.heapgrowthlimit=128m
+
+# Override /proc/sys/vm/dirty_ratio on UMS
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.vold.umsdirtyratio=20
+
+# Set default USB interface
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    persist.sys.usb.config=mtp
+
+# disable usb debugging notif
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.adb.notify=0
 
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
-
-# Screen density is actually considered a locale (since it is taken into account
-# the the build-time selection of resources). The product definitions including
-# this file must pay attention to the fact that the first entry in the final
-# PRODUCT_LOCALES expansion must not be a density.
-PRODUCT_LOCALES := hdpi
 
 # kernel modules
 PRODUCT_COPY_FILES += $(foreach module,\
@@ -176,11 +200,12 @@ else
 endif
 
 PRODUCT_COPY_FILES += \
-        $(LOCAL_KERNEL):kernel
+    $(LOCAL_KERNEL):kernel
 
 PRODUCT_COPY_FILES += \
-	device/samsung/aries-common/updater.sh:updater.sh
-        device/samsung/vibrantmtd/get-gps-lto:/system/bin/get-gps-lto
+    device/samsung/aries-common/updater.sh:updater.sh
+
+$(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/firmware/bcm4329/device-bcm.mk)
 
 # See comment at the top of this file. This is where the other
 # half of the device-specific product definition file takes care

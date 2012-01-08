@@ -14,23 +14,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-DEVICE=vibrantmtd
+DEVICE=fascinatemtd
 COMMON=aries-common
 MANUFACTURER=samsung
 
 mkdir -p ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
 mkdir -p ../../../vendor/$MANUFACTURER/$COMMON/proprietary
 
-# vibrantmtd
-adb pull /system/lib/libclientgps.so ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
+# fascinatemtd
 adb pull /system/lib/libril.so ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
 adb pull /system/lib/libsecril-client.so ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
-adb pull /system/lib/libsec-ril.so ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
+adb pull /system/lib/libsec-ril40.so ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
 adb pull /system/bin/rild ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
-adb pull /system/vendor/lib/hw/gps.aries.so ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
-adb pull /system/vendor/bin/gpsd ../../../vendor/$MANUFACTURER/$DEVICE/proprietary/agpsd
+adb pull /system/lib/hw/gps.aries.so ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
+adb pull /system/vendor/bin/gpsd ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
+adb pull /system/vendor/etc/gps.xml ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
+adb pull /system/etc/gps.conf ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
 adb pull /system/lib/libsamsungcamera.so ../../../vendor/$MANUFACTURER/$DEVICE/proprietary/libcamera.so
-adb pull /radio/modem.bin ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
+adb pull /system/vendor/lib/libsensorservice.so ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
+adb pull /system/vendor/lib/libsensor_yamaha_test.so ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
+adb pull /system/vendor/bin/geomagneticd ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
+adb pull /system/vendor/bin/orientationd ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
+adb pull /system/lib/hw/sensors.default.so ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
+adb pull /system/app/PhoneConfig.apk ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
+adb pull /system/app/ProgramMenu.apk ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
+adb pull /system/app/ProgramMenuSystem.apk ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
+adb pull /system/bin/pppd_runner ../../../vendor/$MANUFACTURER/$DEVICE/proprietary
+touch ../../../vendor/$MANUFACTURER/$DEVICE/proprietary/modem.bin #fake modem.bin for build system
 
 # aries-common
 adb pull /system/vendor/bin/pvrsrvinit ../../../vendor/$MANUFACTURER/$COMMON/proprietary
@@ -53,15 +63,10 @@ adb pull /system/vendor/lib/libsrv_init.so ../../../vendor/$MANUFACTURER/$COMMON
 adb pull /system/vendor/lib/libsrv_um.so ../../../vendor/$MANUFACTURER/$COMMON/proprietary
 adb pull /system/vendor/firmware/CE147F02.bin ../../../vendor/$MANUFACTURER/$COMMON/proprietary
 adb pull /system/vendor/lib/libusc.so ../../../vendor/$MANUFACTURER/$COMMON/proprietary
-adb pull /system/vendor/lib/libsensor_yamaha_test.so ../../../vendor/$MANUFACTURER/$COMMON/proprietary
-adb pull /system/vendor/lib/libsensorservice.so ../../../vendor/$MANUFACTURER/$COMMON/proprietary
-adb pull /system/vendor/bin/orientationd ../../../vendor/$MANUFACTURER/$COMMON/proprietary
-adb pull /system/vendor/bin/geomagneticd ../../../vendor/$MANUFACTURER/$COMMON/proprietary
 adb pull /system/lib/libActionShot.so ../../../vendor/$MANUFACTURER/$COMMON/proprietary
 adb pull /system/lib/libarccamera.so ../../../vendor/$MANUFACTURER/$COMMON/proprietary
 adb pull /system/lib/libcamera_client.so ../../../vendor/$MANUFACTURER/$COMMON/proprietary
 adb pull /system/lib/libcamerafirmwarejni.so ../../../vendor/$MANUFACTURER/$COMMON/proprietary
-adb pull /system/lib/libcameraservice.so ../../../vendor/$MANUFACTURER/$COMMON/proprietary
 adb pull /system/lib/libCaMotion.so ../../../vendor/$MANUFACTURER/$COMMON/proprietary
 adb pull /system/lib/libcaps.so ../../../vendor/$MANUFACTURER/$COMMON/proprietary
 adb pull /system/lib/libPanoraMax1.so ../../../vendor/$MANUFACTURER/$COMMON/proprietary
@@ -131,14 +136,25 @@ PRODUCT_COPY_FILES := \\
 
 # All the blobs necessary for galaxys devices
 PRODUCT_COPY_FILES += \\
-    vendor/__MANUFACTURER__/__DEVICE__/proprietary/libclientgps.so:system/lib/libclientgps.so \\
     vendor/__MANUFACTURER__/__DEVICE__/proprietary/libril.so:system/lib/libril.so \\
     vendor/__MANUFACTURER__/__DEVICE__/proprietary/libsecril-client.so:system/lib/libsecril-client.so \\
-    vendor/__MANUFACTURER__/__DEVICE__/proprietary/libsec-ril.so:system/lib/libsec-ril.so \\
-    vendor/__MANUFACTURER__/__DEVICE__/proprietary/gps.aries.so:system/vendor/lib/hw/gps.aries.so \\
+    vendor/__MANUFACTURER__/__DEVICE__/proprietary/libsec-ril40.so:system/lib/libsec-ril40.so \\
+    vendor/__MANUFACTURER__/__DEVICE__/proprietary/gps.aries.so:system/lib/hw/gps.aries.so \\
     vendor/__MANUFACTURER__/__DEVICE__/proprietary/rild:system/bin/rild \\
-    vendor/__MANUFACTURER__/__DEVICE__/proprietary/agpsd:system/vendor/bin/gpsd \\
-    vendor/__MANUFACTURER__/__DEVICE__/proprietary/libcamera.so:system/lib/libsamsungcamera.so
+    vendor/__MANUFACTURER__/__DEVICE__/proprietary/gpsd:system/vendor/bin/gpsd \\
+    vendor/__MANUFACTURER__/__DEVICE__/proprietary/gps.xml:system/vendor/etc/gps.xml \\
+    vendor/__MANUFACTURER__/__DEVICE__/proprietary/gps.conf:system/etc/gps.conf \\
+    vendor/__MANUFACTURER__/__DEVICE__/proprietary/libcamera.so:system/lib/libsamsungcamera.so \\
+    vendor/__MANUFACTURER__/__DEVICE__/proprietary/libsensorservice.so:system/vendor/lib/libsensorservice.so \\
+    vendor/__MANUFACTURER__/__DEVICE__/proprietary/libsensor_yamaha_test.so:system/vendor/lib/libsensor_yamaha_test.so \\
+    vendor/__MANUFACTURER__/__DEVICE__/proprietary/geomagneticd:system/vendor/bin/geomagneticd \\
+    vendor/__MANUFACTURER__/__DEVICE__/proprietary/orientationd:system/vendor/bin/orientationd \\
+    vendor/__MANUFACTURER__/__DEVICE__/proprietary/sensors.default.so:system/lib/hw/sensors.default.so \\
+    vendor/__MANUFACTURER__/__DEVICE__/proprietary/PhoneConfig.apk:system/app/PhoneConfig.apk \\
+    vendor/__MANUFACTURER__/__DEVICE__/proprietary/ProgramMenu.apk:system/app/ProgramMenu.apk \\
+    vendor/__MANUFACTURER__/__DEVICE__/proprietary/ProgramMenuSystem.apk:system/app/ProgramMenuSystem.apk \\
+    vendor/__MANUFACTURER__/__DEVICE__/proprietary/pppd_runner:system/bin/pppd_runner
+
 EOF
 
 
@@ -180,22 +196,12 @@ PRODUCT_COPY_FILES += \\
     vendor/__MANUFACTURER__/__COMMON__/proprietary/CE147F02.bin:system/vendor/firmware/CE147F02.bin \\
     vendor/__MANUFACTURER__/__COMMON__/proprietary/libusc.so:system/vendor/lib/libusc.so
 
-# fascinatemtd uses older sensor drivers
-ifndef TARGET_USES_OLD_LIBSENSORS_HAL
-PRODUCT_COPY_FILES += \\
-    vendor/__MANUFACTURER__/__COMMON__/proprietary/libsensor_yamaha_test.so:system/vendor/lib/libsensor_yamaha_test.so \\
-    vendor/__MANUFACTURER__/__COMMON__/proprietary/libsensorservice.so:system/vendor/lib/libsensorservice.so \\
-    vendor/__MANUFACTURER__/__COMMON__/proprietary/orientationd:system/vendor/bin/orientationd \\
-    vendor/__MANUFACTURER__/__COMMON__/proprietary/geomagneticd:system/vendor/bin/geomagneticd
-endif
-
 # camera and tvout
 PRODUCT_COPY_FILES += \\
     vendor/__MANUFACTURER__/__COMMON__/proprietary/libActionShot.so:system/lib/libActionShot.so \\
     vendor/__MANUFACTURER__/__COMMON__/proprietary/libarccamera.so:system/lib/libarccamera.so \\
     vendor/__MANUFACTURER__/__COMMON__/proprietary/libcamera_client.so:system/lib/libcamera_client.so \\
     vendor/__MANUFACTURER__/__COMMON__/proprietary/libcamerafirmwarejni.so:system/lib/libcamerafirmwarejni.so \\
-    vendor/__MANUFACTURER__/__COMMON__/proprietary/libcameraservice.so:system/lib/libcameraservice.so \\
     vendor/__MANUFACTURER__/__COMMON__/proprietary/libCaMotion.so:system/lib/libCaMotion.so \\
     vendor/__MANUFACTURER__/__COMMON__/proprietary/libcaps.so:system/lib/libcaps.so \\
     vendor/__MANUFACTURER__/__COMMON__/proprietary/libPanoraMax1.so:system/lib/libPanoraMax1.so \\
